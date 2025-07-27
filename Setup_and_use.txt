@@ -1,0 +1,49 @@
+SETUP:
+go to ' cd /etc/netplan/ '
+find ' .yaml ' file and make it look like this:
+
+
+'''
+network:
+	version: 2
+	renderer: NetworkManager
+	ethernets:
+		< ethernet name >:
+			dhcp4: no
+			addresses: [ <ip address> ]
+			gateway4: [ < router ip > ]
+			nameservers:
+				addresses: [1.1.1.1,8.8.8.8]
+			
+'''
+
+
+go to ' /etc/hosts ' add all the ip's of other nodes and masster to top of file
+set localhost and <node> to same ip
+verify internet with ping google.com
+install / enable ssh
+master must ' ssh-copy-id username@<node> ' 
+go to ' cd /.ssh/ '
+ls
+make sure ' authorized_keys ' is a legit file
+go to ' cd /etc/ssh/sshd_config ' and allow root login , allow public key use , allow file access
+run ' wget -O /tmp/netdata-kickstart.sh https://get.netdata.cloud/kickstart.sh && sh /tmp/netdata-kickstart.sh --stable-channel --claim-token mj_jU1xn3kpLXjc0TJoStrbhZ6gSLYzC8qdQ8TssirPE5-c-VvnqNYBEtMPh9zYT9_Nt_54nDXZfxW-NNsF32pqMXx_Wv9Nw1q796e-yfQkMDCehtlGLYnp-iWo9jih_lyfmuU4 --claim-rooms f0e7feca-5c4e-417b-a4d1-11118fc943f1 --claim-url https://app.netdata.cloud ' to join the system monitering
+
+
+RUNNING COMMANDS:
+mpirun -np <host amount> --host host1***:N,host2,... *--oversubscribe **<command to run>
+
+* oversubscribe allows you to run as many procces as you want for each device even if you dont have enough host
+
+** any linux command can be run here, you can also have file run here but it will not return the proper error so be careful with what your run.
+
+*** :N for that specific node how mnay proccess do you want to run
+
+BENCHMARKING:
+i use hyperfine to benchmark the system and commands
+
+touch Output.txt
+
+hyperfine --runs 100 --export-markdown ~/Desktop/Output.txt <*command to run>
+
+* for the command i like to use 
